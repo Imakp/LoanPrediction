@@ -1,0 +1,9 @@
+Django>=3.2,<4.0
+numpy
+pandas
+scikit-learn==1.3.0
+seaborn
+matplotlib
+joblib
+xgboost
+gunicorn

@@ -1,0 +1,283 @@
+<!-- predictor/templates/predictor/predict.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 900px; /* Increased width to accommodate more fields in a row */
+            margin: 50px auto;
+            transition: box-shadow 0.3s ease;
+        }
+        .container:hover {
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        h2.hover-effect {
+            color: #007bff !important; /* Default blue when hovered */
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .required::after {
+            content: '*';
+            color: red;
+            margin-left: 0.2em;
+        }
+        .form-check-inline {
+            margin-right: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .form-check-inline:hover {
+            transform: scale(1.1);
+        }
+        .btn-primary {
+            display: block;
+            width: 30%;
+            margin: 2rem auto;
+            padding: 0.75rem;
+            font-size: 1.2rem;
+            background-color: #007bff;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 1rem;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="formContainer">
+        <h2 id="formTitle">Loan Prediction</h2>
+        <form method="post" id="loanPredictionForm">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <label class="required">{{ form.gender.label_tag }}</label>
+                    <div>
+                        {% for radio in form.gender %}
+                            <div class="form-check form-check-inline">
+                                {{ radio.tag }} {{ radio.choice_label }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="required">{{ form.married.label_tag }}</label>
+                    <div>
+                        {% for radio in form.married %}
+                            <div class="form-check form-check-inline">
+                                {{ radio.tag }} {{ radio.choice_label }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="required">{{ form.self_employed.label_tag }}</label>
+                    <div>
+                        {% for radio in form.self_employed %}
+                            <div class="form-check form-check-inline">
+                                {{ radio.tag }} {{ radio.choice_label }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="required">{{ form.credit_history.label_tag }}</label>
+                    <div>
+                        {% for radio in form.credit_history %}
+                            <div class="form-check form-check-inline">
+                                {{ radio.tag }} {{ radio.choice_label }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <small class="error-message" id="creditHistoryError">Please select credit history.</small>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label class="required">{{ form.dependents.label_tag }}</label>
+                    <select id="id_dependents" name="dependents" class="form-control">
+                        <option value="">Select</option>
+                        {% for choice in form.dependents.field.choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="error-message" id="dependentsError">Please select number of dependents.</small>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label class="required">{{ form.education.label_tag }}</label>
+                    <select id="id_education" name="education" class="form-control">
+                        <option value="">Select</option>
+                        {% for choice in form.education.field.choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="error-message" id="educationError">Please select education status.</small>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label class="required">{{ form.property_area.label_tag }}</label>
+                    <select id="id_property_area" name="property_area" class="form-control">
+                        <option value="">Select</option>
+                        {% for choice in form.property_area.field.choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="error-message" id="propertyAreaError">Please select property area.</small>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label class="required">{{ form.applicant_income.label_tag }}</label>
+                    {{ form.applicant_income }}
+                    <small class="error-message" id="applicantIncomeError">Please enter applicant income.</small>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label class="required">{{ form.coapplicant_income.label_tag }}</label>
+                    {{ form.coapplicant_income }}
+                    <small class="error-message" id="coapplicantIncomeError">Please enter coapplicant income.</small>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label class="required">{{ form.loan_amount.label_tag }}</label>
+                    {{ form.loan_amount }}
+                    <small class="error-message" id="loanAmountError">Please enter loan amount.</small>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label class="required">{{ form.loan_amount_term.label_tag }}</label>
+                    {{ form.loan_amount_term }}
+                    <small class="error-message" id="loanAmountTermError">Please enter loan amount term.</small>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="predictButton">Predict</button>
+        </form>
+    </div>
+
+    <script>
+        // Add event listeners for container mouse enter and leave to change the title color
+        const container = document.getElementById('formContainer');
+        const title = document.getElementById('formTitle');
+
+        container.addEventListener('mouseenter', () => {
+            title.classList.add('hover-effect');
+        });
+
+        container.addEventListener('mouseleave', () => {
+            title.classList.remove('hover-effect');
+        });
+
+        // Form validation script
+        document.getElementById('loanPredictionForm').addEventListener('submit', function(event) {
+            var isValid = true;
+
+            // Check if dependents is not selected
+            if (document.getElementById('id_dependents').value === '') {
+                document.getElementById('dependentsError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('dependentsError').style.display = 'none';
+            }
+
+            // Check if education is not selected
+            if (document.getElementById('id_education').value === '') {
+                document.getElementById('educationError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('educationError').style.display = 'none';
+            }
+
+            // Check if property area is not selected
+            if (document.getElementById('id_property_area').value === '') {
+                document.getElementById('propertyAreaError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('propertyAreaError').style.display = 'none';
+            }
+
+            // Check if applicant income is not entered
+            if (document.getElementById('id_applicant_income').value.trim() === '') {
+                document.getElementById('applicantIncomeError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('applicantIncomeError').style.display = 'none';
+            }
+
+            // Check if coapplicant income is not entered
+            if (document.getElementById('id_coapplicant_income').value.trim() === '') {
+                document.getElementById('coapplicantIncomeError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('coapplicantIncomeError').style.display = 'none';
+            }
+
+            // Check if loan amount is not entered
+            if (document.getElementById('id_loan_amount').value.trim() === '') {
+                document.getElementById('loanAmountError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('loanAmountError').style.display = 'none';
+            }
+
+            // Check if loan amount term is not entered
+            if (document.getElementById('id_loan_amount_term').value.trim() === '') {
+                document.getElementById('loanAmountTermError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('loanAmountTermError').style.display = 'none';
+            }
+
+            // Check if credit history is not selected
+            if (!document.querySelector('input[name="credit_history"]:checked')) {
+                document.getElementById('creditHistoryError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('creditHistoryError').style.display = 'none';
+            }
+
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    </script>
+</body>
+</html>

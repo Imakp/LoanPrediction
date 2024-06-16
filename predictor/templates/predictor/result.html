@@ -1,0 +1,138 @@
+<!-- predictor/templates/predictor/result.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 5rem;
+            width: 80%;
+            max-width: 900px; /* Max width for the container */
+        }
+        h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+        .result-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .result-box {
+            flex: 1 1 calc(50% - 1rem); /* Each box takes up 50% of the row minus the gap */
+            background: #f1f1f1;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .result-box:hover {
+            background-color: #e2e6ea;
+        }
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .text-success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .text-danger {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .btn-primary {
+            display: block;
+            width: 30%;
+            margin: 2rem auto;
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 0.75rem;
+            margin-top: 2rem;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .result-box {
+                flex: 1 1 100%; /* On small screens, each box takes full width */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Prediction Result</h2>
+        <div class="result-container">
+            <div class="result-box">
+                <div class="result-title">Logistic Regression</div>
+                <div>{% if result.logistic_regression == 'Approved' %} 
+                    <span class="text-success">Approved</span> 
+                {% else %} 
+                    <span class="text-danger">Rejected</span> 
+                {% endif %}
+                </div>
+            </div>
+            <div class="result-box">
+                <div class="result-title">Random Forest</div>
+                <div>{% if result.random_forest == 'Approved' %} 
+                    <span class="text-success">Approved</span> 
+                {% else %} 
+                    <span class="text-danger">Rejected</span> 
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="result-container">
+            <div class="result-box">
+                <div class="result-title">Gradient Boosting</div>
+                <div>{% if result.best_gb_clf == 'Approved' %} 
+                    <span class="text-success">Approved</span> 
+                {% else %} 
+                    <span class="text-danger">Rejected</span> 
+                {% endif %}
+                </div>
+            </div>
+            <div class="result-box">
+                <div class="result-title">XGBoost Classifier</div>
+                <div>{% if result.best_xgb_clf == 'Approved' %} 
+                    <span class="text-success">Approved</span> 
+                {% else %} 
+                    <span class="text-danger">Rejected</span> 
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'predict' %}" class="btn btn-primary">Try Again</a>
+    </div>
+</body>
+</html>
