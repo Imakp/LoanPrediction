@@ -132,8 +132,11 @@ loan-prediction-app/
 ### Main Form Page
 ![Main Form Page](screenshots/main_form_page.png)
 
-### Prediction Result Page
+### Prediction Result Page Approved
 ![Prediction Result Page](screenshots/prediction_result_page.png)
+
+### Prediction Result Page Failure
+![Prediction Result Page Failure](screenshots/prediction_result_page_failure.png)
 
 ## Credits
 
